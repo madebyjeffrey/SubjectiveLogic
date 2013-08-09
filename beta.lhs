@@ -14,7 +14,7 @@ Generating a Beta Mapping: (eq 3.6)
 
 
 > beta :: Opinion -> Beta
-> beta w (Opinion b d 0 a) = Beta infinity infinity (fromRational a)
+> beta w (Opinion b d 0 a) = Beta (1/0) (1/0) (fromRational a)
 > beta w (Opinion b d u a) = Beta r s a
 >   where
 >       r = fromRational (w * b / u)
