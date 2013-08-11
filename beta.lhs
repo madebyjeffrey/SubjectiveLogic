@@ -6,8 +6,11 @@
 > import Data.Monoid
 > import Data.List
 > import Control.Applicative
-> import Graphics.Rendering.Chart.Simple
-> import Graphics.Rendering.Chart.Simple.Internal (PlotPDFType)
+
+import Graphics.Rendering.Chart.Simple
+import Graphics.Rendering.Chart.Simple.Internal (PlotPDFType)
+
+> import Graphics.Rendering.Chart
 
 > import SubjectiveLogic
 > import Numeric.GSL.Special.Gamma (gamma)
@@ -41,11 +44,31 @@ Next we can show a graph:
 
 First we obtain probability values:
 
-> probability_range :: [Double]
-> probability_range = [0, 0.01 .. 1]
+> ps :: [Double]
+> ps = [0, 0.01 .. 1]
 
-> graph :: (PlotPDFType a) => FilePath -> Rational -> Opinion -> a 
-> graph path w o = plotPDF path probability_range (beta (α w o) (β w o)) Solid
+Define the chart for the example beta pdf
 
-> fig32 :: (PlotPDFType a) => Maybe a
-> fig32 = graph "betafig32.pdf" 2 <$> (opinion (2%10) (5%10) (3%10) (6%10))  -- figure 3.2
+> pdfChart = layout
+>   where
+>       w = 2
+>       ω = (opinion (2%10) (5%10) (3%10) (6%10)) 
+>       βpdf = (beta (α w o) (β w o))
+>       pdf o = plot_lines_style .> line_color ^= opaque blue
+>             $ plot_lines_values ^= [ zip ps (map βpdf ps) ]
+>             $ plot_lines_title ^= show ω
+>             $ default_plot_lines
+>
+>       layout = layout1_title ^= "Probability Density Function"
+>              $ layout1_left_axis ^: laxis_title_ ^= "Density"
+>              $ layout1_bottom_axis ^: laxis_title_ ^= "Probability"
+>              $ layout1_plots ^= [Left (toPlot pdf (fromJust ω))]
+>              $ layout1_grid_last ^= False
+>              $ defaultLayout1
+
+> graph :: (PlotPDFType a) => FilePath -> Rational -> Maybe Opinion -> a 
+> graph path w (Just o) = plotPDF path probability_range (beta (α w o) (β w o)) Solid
+> graph _ _ Nothing = 
+
+fig32 :: (PlotPDFType a) => (Maybe a)
+fig32 = graph "betafig32.pdf" 2 <$> (opinion (2%10) (5%10) (3%10) (6%10))  -- figure 3.2
