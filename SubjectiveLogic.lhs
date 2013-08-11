@@ -1,5 +1,5 @@
 
-> module SubjectiveLogic(BaseRate, Opinion, opinion, pp) where
+> module SubjectiveLogic(BaseRate, Opinion(..), opinion, pp) where
 
 > import Data.Ratio
 > import Data.Maybe
