@@ -1,4 +1,4 @@
-> {-# LANGUAGE ExistentialQuantification #-}
+> {-# LANGUAGE ExistentialQuantification, NoMonomorphismRestriction #-}
 > module Beta (beta) where
 
 > import Data.Ratio
@@ -47,4 +47,5 @@ First we obtain probability values:
 > graph :: (PlotPDFType a) => FilePath -> Rational -> Opinion -> a 
 > graph path w o = plotPDF path probability_range (beta (α w o) (β w o)) Solid
 
+> fig32 :: (PlotPDFType a) => Maybe a
 > fig32 = graph "betafig32.pdf" 2 <$> (opinion (2%10) (5%10) (3%10) (6%10))  -- figure 3.2
